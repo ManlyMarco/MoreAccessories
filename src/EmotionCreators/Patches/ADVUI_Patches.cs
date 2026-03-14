@@ -1,29 +1,27 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using ADVPart.Manipulate.Chara;
+﻿using ADVPart.Manipulate.Chara;
 using HarmonyLib;
+using Illusion.Extensions;
+using System;
+using System.Linq;
 using TMPro;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
-using Object = UnityEngine.Object;
 
 namespace MoreAccessoriesKOI.Patches
 {
-    internal static class AdvUi_Patches
+    internal class ADVUI_Patches
     {
-        private static float? _defaultHeight;//base length of 20 slots to use as reference for rebuilding height
-        private static float? _defaultText;//default font size to return to after autoscaling text to fit
+        private static float? defaultheight;//base length of 20 slots to use as reference for rebuilding height
+        private static float? defaulttext;//default font size to return to after autoscaling text to fit
 
         [HarmonyPatch(typeof(AccessoryUICtrl), nameof(AccessoryUICtrl.UpdateUI))]
-        [SuppressMessage("ReSharper", "UnusedMember.Local")]
-        private static class UpdateUI_Patches
+        private static class AccessoryUICtrl_UpdateUI_Patches
         {
             private static bool Prefix(AccessoryUICtrl __instance)
             {
                 __instance.isUpdateUI = true;
-                UpdateAdvUi(__instance);
+                UpdateADVUI(__instance);
                 var range = Math.Min(__instance.chaControl.nowCoordinate.accessory.parts.Length, __instance.toggles.Length);
 
                 #region Adjust Visible Slots
@@ -54,9 +52,9 @@ namespace MoreAccessoriesKOI.Patches
 
                 #region NameSlots
                 {
-                    if (!_defaultText.HasValue)
+                    if (!defaulttext.HasValue)
                     {
-                        _defaultText = __instance.toggles[0].toggles[0].transform.parent.parent.GetComponentInChildren<TextMeshProUGUI>().m_currentFontSize;
+                        defaulttext = __instance.toggles[0].toggles[0].transform.parent.parent.GetComponentInChildren<TextMeshProUGUI>().m_currentFontSize;
                     }
 
                     var i = 0;
@@ -72,82 +70,87 @@ namespace MoreAccessoriesKOI.Patches
                         }
                         text.text = $"スロット {i + 1}";
                         text.enableAutoSizing = false;
-                        text.fontSize = _defaultText.Value;
+                        text.fontSize = defaulttext.Value;
                     }
                 }
                 #endregion
-                
+
                 __instance.isUpdateUI = false;
                 return false;
             }
         }
 
-        private static void UpdateAdvUi(AccessoryUICtrl advUI)
+        private static void UpdateADVUI(AccessoryUICtrl _advUI)
         {
-            var advToggleTemplate = advUI.toggles[19].toggles[0].transform.parent.parent;
-            var baseLength = advUI.toggles.Length;
-            var count = advUI.chaControl.nowCoordinate.accessory.parts.Length - baseLength;
+            var _advToggleTemplate = _advUI.toggles[19].toggles[0].transform.parent.parent;
+            var baselength = _advUI.toggles.Length;
+            var count = _advUI.chaControl.nowCoordinate.accessory.parts.Length - baselength;
             if (0 < count)
             {
-                var toggleUiAppend = new AccessoryUICtrl.ToggleUI[count];
+                var toggleuiappend = new AccessoryUICtrl.ToggleUI[count];
                 for (var i = 0; i < count; i++)
                 {
-                    var toggleGo = Object.Instantiate(advToggleTemplate, advToggleTemplate.parent);
-                    var toggleNum = baseLength + i;
+                    var toggleGO = UnityEngine.Object.Instantiate(_advToggleTemplate, _advToggleTemplate.parent);
+                    var togglenum = baselength + i;
 
-                    toggleGo.name = $"Slot {toggleNum + 1}";
-                    var toggleUI = toggleUiAppend[i] = new AccessoryUICtrl.ToggleUI();
-                    var toggles = toggleGo.GetComponentsInChildren<Toggle>();
-                    toggleGo.GetComponentInChildren<TextMeshProUGUI>().text = $"スロット {toggleNum + 1}";
+                    toggleGO.name = $"Slot {togglenum + 1}";
+                    var toggleUI = toggleuiappend[i] = new AccessoryUICtrl.ToggleUI();
+                    var toggles = toggleGO.GetComponentsInChildren<Toggle>();
+                    toggleGO.GetComponentInChildren<TextMeshProUGUI>().text = $"スロット {togglenum + 1}";
                     toggleUI.toggles = new Toggle[toggles.Length];
                     for (var j = 0; j < toggles.Length; j++)
                     {
                         var state = j - 1;
                         toggles[j].onValueChanged = new Toggle.ToggleEvent();
-                        toggles[j].OnValueChangedAsObservable().Subscribe(delegate
+                        toggles[j].OnValueChangedAsObservable().Subscribe(delegate (bool _)
                         {
-                            if (advUI.isUpdateUI) { return; }
+                            if (_advUI.isUpdateUI) { return; }
 
-                            advUI.charState.accessory[toggleNum] = state;
+                            _advUI.charState.accessory[togglenum] = state;
 
                             if (state >= 0)
                             {
-                                advUI.chaControl.SetAccessoryState(toggleNum, state == 0);
+                                _advUI.chaControl.SetAccessoryState(togglenum, state == 0);
                             }
                         });
 
                         toggleUI.toggles[j] = toggles[j];
                     }
-                    toggleGo.gameObject.SetActive(true);
+                    toggleGO.gameObject.SetActive(true);
                 }
-                advUI.toggles = advUI.toggles.Concat(toggleUiAppend).ToArray();
+                _advUI.toggles = _advUI.toggles.Concat(toggleuiappend).ToArray();
             }
-            count = advUI.chaControl.nowCoordinate.accessory.parts.Length - advUI.charState.accessory.Length;
+            count = _advUI.chaControl.nowCoordinate.accessory.parts.Length - _advUI.charState.accessory.Length;
             if (0 < count)
             {
-                var accessoryArray = new int[count];
+                var accessoryarray = new int[count];
                 for (var i = 0; i < count; i++)
                 {
-                    accessoryArray[i] = -1;
+                    accessoryarray[i] = -1;
                 }
-                advUI.charState.accessory = advUI.charState.accessory.Concat(accessoryArray).ToArray();
+                _advUI.charState.accessory = _advUI.charState.accessory.Concat(accessoryarray).ToArray();
             }
             else if (count != 0)
             {
-                advUI.charState.accessory = advUI.charState.accessory.Take(advUI.chaControl.nowCoordinate.accessory.parts.Length).ToArray();
+                _advUI.charState.accessory = _advUI.charState.accessory.Take(_advUI.chaControl.nowCoordinate.accessory.parts.Length).ToArray();
             }
         }
 
-        private static void CalculateHeight(AccessoryUICtrl advUI)
+        private static void CalculateHeight(AccessoryUICtrl _advUI)
         {
-            var advToggleTemplate = advUI.toggles[19].toggles[0].transform.parent.parent;
-            var parent = (RectTransform)advToggleTemplate.parent.parent;
-            if (!_defaultHeight.HasValue)
+            var _advToggleTemplate = _advUI.toggles[19].toggles[0].transform.parent.parent;
+            var parent = (RectTransform)_advToggleTemplate.parent.parent;
+            if (!defaultheight.HasValue)
             {
-                _defaultHeight = parent.offsetMax.y;
+                defaultheight = parent.offsetMax.y;
             }
-            parent.offsetMin = new Vector2(0, _defaultHeight.Value - 66 - 34 * (advUI.chaControl.nowCoordinate.accessory.parts.Length + 1));
-            LayoutRebuilder.MarkLayoutForRebuild((RectTransform)advToggleTemplate.parent.parent);
+            parent.offsetMin = new Vector2(0, defaultheight.Value - 66 - 34 * (_advUI.chaControl.nowCoordinate.accessory.parts.Length + 1));
+            LayoutRebuilder.MarkLayoutForRebuild((RectTransform)_advToggleTemplate.parent.parent);
+            //MoreAccessories._self.ExecuteDelayed(() =>
+            //{
+            //    LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)_advToggleTemplate.parent.parent);
+            //    LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)_advToggleTemplate.parent.parent.parent);
+            //});
         }
     }
 }

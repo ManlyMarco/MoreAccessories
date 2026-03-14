@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using UnityEngine;
 #if IPA
 using IllusionInjector;
 using IllusionPlugin;
 #endif
+using UnityEngine;
 
 namespace MoreAccessoriesKOI.Extensions
 {
-    [SuppressMessage("ReSharper", "UnusedMember.Global")]
     internal static class MonoBehaviourExtensions
     {
 #if IPA

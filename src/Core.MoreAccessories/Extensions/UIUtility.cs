@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using Object = UnityEngine.Object;
 
 namespace MoreAccessoriesKOI.Extensions
 {
@@ -42,26 +41,24 @@ namespace MoreAccessoriesKOI.Extensions
                 }
                 if (dialog == null)
                 {
-                    var c = CreateNewUISystem("ConfirmationDialog");
+                    var c = UIUtility.CreateNewUISystem("ConfirmationDialog");
                     c.sortingOrder = 40;
-                    var transform2 = c.transform;
-                    transform2.localPosition = Vector3.zero;
-                    transform2.localScale = Vector3.one;
+                    c.transform.localPosition = Vector3.zero;
+                    c.transform.localScale = Vector3.one;
                     c.transform.SetRect();
-                    Transform transform1;
-                    (transform1 = c.transform).SetAsLastSibling();
+                    c.transform.SetAsLastSibling();
 
-                    var bg = CreateImage("Background", transform1);
+                    var bg = UIUtility.CreateImage("Background", c.transform);
                     bg.rectTransform.SetRect();
                     bg.sprite = null;
                     bg.color = new Color(0f, 0f, 0f, 0.5f);
                     bg.raycastTarget = true;
 
-                    var panel = CreatePanel("Panel", bg.transform);
+                    var panel = UIUtility.CreatePanel("Panel", bg.transform);
                     panel.rectTransform.SetRect(new Vector2(0.4f, 0.4f), new Vector2(0.6f, 0.6f));
                     panel.color = Color.gray;
 
-                    var text = CreateText("Text", panel.transform, "");
+                    var text = UIUtility.CreateText("Text", panel.transform, "");
                     text.rectTransform.SetRect(new Vector2(0f, 0.333333f), Vector2.one, new Vector2(10f, 10f), new Vector2(-10f, -10f));
                     text.color = Color.white;
                     text.resizeTextForBestFit = true;
@@ -69,7 +66,7 @@ namespace MoreAccessoriesKOI.Extensions
                     text.alignByGeometry = true;
                     text.alignment = TextAnchor.MiddleCenter;
 
-                    var yes = CreateButton("YesButton", panel.transform, "Yes");
+                    var yes = UIUtility.CreateButton("YesButton", panel.transform, "Yes");
                     (yes.transform as RectTransform).SetRect(Vector2.zero, new Vector2(0.5f, 0.333333f), new Vector2(10f, 10f), new Vector2(-5f, -10f));
                     text = yes.GetComponentInChildren<Text>();
                     text.resizeTextForBestFit = true;
@@ -77,7 +74,7 @@ namespace MoreAccessoriesKOI.Extensions
                     text.alignByGeometry = true;
                     text.alignment = TextAnchor.MiddleCenter;
 
-                    var no = CreateButton("NoButton", panel.transform, "No");
+                    var no = UIUtility.CreateButton("NoButton", panel.transform, "No");
                     (no.transform as RectTransform).SetRect(new Vector2(0.5f, 0f), new Vector2(1f, 0.333333f), new Vector2(5f, 10f), new Vector2(-10f, -10f));
                     text = no.GetComponentInChildren<Text>();
                     text.resizeTextForBestFit = true;
@@ -146,7 +143,7 @@ namespace MoreAccessoriesKOI.Extensions
             private readonly Vector3[] _limitCorners = new Vector3[4];
             private Vector2 _cachedDragPosition;
             private Vector2 _cachedMousePosition;
-            private bool _pointerDownCalled;
+            private bool _pointerDownCalled = false;
 
             public RectTransform toDrag;
             public RectTransform limit;
@@ -244,7 +241,7 @@ namespace MoreAccessoriesKOI.Extensions
         public static int defaultFontSize;
         public static DefaultControls.Resources resources;
 
-        private static bool _resourcesLoaded;
+        private static bool _resourcesLoaded = false;
         private static Action<Action<bool>, string> _displayConfirmationDialog;
         private static RectTransform _contextMenuRoot;
         private static readonly List<ContextMenuUIElement> _displayedContextMenuElements = new List<ContextMenuUIElement>();
@@ -504,7 +501,6 @@ namespace MoreAccessoriesKOI.Extensions
             foreach (var m in go.GetComponentsInChildren<Mask>(true))
             {
                 m.enabled = false;
-                // ReSharper disable once Unity.InefficientPropertyAccess
                 m.enabled = true;
             }
             return go.GetComponent<ScrollRect>();
@@ -673,8 +669,8 @@ namespace MoreAccessoriesKOI.Extensions
             root.gameObject.AddComponent<LayoutElement>().preferredHeight = 25;
             var b = CreateButton("Button", root);
             b.transform.SetRect();
-            Object.Destroy(b.GetComponent<Image>());
-            Object.Destroy(b.GetComponent<CanvasRenderer>());
+            UnityEngine.Object.Destroy(b.GetComponent<Image>());
+            UnityEngine.Object.Destroy(b.GetComponent<CanvasRenderer>());
             b.targetGraphic = CreateImage("Background", b.transform, standardSprite);
             b.targetGraphic.rectTransform.SetRect();
             ((Image)b.targetGraphic).type = Image.Type.Sliced;

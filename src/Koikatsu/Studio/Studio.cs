@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using JetBrains.Annotations;
-using Studio;
+﻿using Studio;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,9 +9,7 @@ namespace MoreAccessoriesKOI
     {
         private StudioSlotData _studioToggleAll;
         private RectTransform _studioToggleTemplate;
-        internal OCIChar SelectedStudioCharacter;
-        [PublicAPI]
-        // ReSharper disable once InconsistentNaming
+        internal OCIChar _selectedStudioCharacter;
         public readonly List<StudioSlotData> _additionalStudioSlots = new List<StudioSlotData>();
         private StudioSlotData _studioToggleMain;
         private StudioSlotData _studioToggleSub;
@@ -25,85 +22,76 @@ namespace MoreAccessoriesKOI
 
             var ctrl = Studio.Studio.Instance.manipulatePanelCtrl.charaPanelInfo.m_MPCharCtrl;
 
-            _studioToggleAll = new StudioSlotData
-            {
-                // ReSharper disable once PossibleNullReferenceException
-                slot = (RectTransform)Object.Instantiate(_studioToggleTemplate.gameObject).transform
-            };
+            _studioToggleAll = new StudioSlotData();
+            _studioToggleAll.slot = (RectTransform)Object.Instantiate(_studioToggleTemplate.gameObject).transform;
             _studioToggleAll.name = _studioToggleAll.slot.GetComponentInChildren<Text>();
             _studioToggleAll.onButton = _studioToggleAll.slot.GetChild(1).GetComponent<Button>();
             _studioToggleAll.offButton = _studioToggleAll.slot.GetChild(2).GetComponent<Button>();
             _studioToggleAll.name.text = "全て";
-            var parent = _studioToggleTemplate.parent;
-            _studioToggleAll.slot.SetParent(parent);
+            _studioToggleAll.slot.SetParent(_studioToggleTemplate.parent);
             _studioToggleAll.slot.localPosition = Vector3.zero;
             _studioToggleAll.slot.localScale = Vector3.one;
             _studioToggleAll.onButton.onClick = new Button.ButtonClickedEvent();
             _studioToggleAll.onButton.onClick.AddListener(() =>
             {
-                SelectedStudioCharacter.charInfo.SetAccessoryStateAll(true);
+                _selectedStudioCharacter.charInfo.SetAccessoryStateAll(true);
                 ctrl.UpdateInfo();
                 UpdateStudioUI();
             });
             _studioToggleAll.offButton.onClick = new Button.ButtonClickedEvent();
             _studioToggleAll.offButton.onClick.AddListener(() =>
             {
-                SelectedStudioCharacter.charInfo.SetAccessoryStateAll(false);
+                _selectedStudioCharacter.charInfo.SetAccessoryStateAll(false);
                 ctrl.UpdateInfo();
                 UpdateStudioUI();
             });
             _studioToggleAll.slot.SetAsLastSibling();
 
-            _studioToggleMain = new StudioSlotData
-            {
-                slot = (RectTransform)Object.Instantiate(_studioToggleTemplate.gameObject).transform
-            };
-            var rectTransform = _studioToggleMain.slot;
-            _studioToggleMain.name = rectTransform.GetComponentInChildren<Text>();
-            _studioToggleMain.onButton = rectTransform.GetChild(1).GetComponent<Button>();
-            _studioToggleMain.offButton = rectTransform.GetChild(2).GetComponent<Button>();
+            _studioToggleMain = new StudioSlotData();
+            _studioToggleMain.slot = (RectTransform)Object.Instantiate(_studioToggleTemplate.gameObject).transform;
+            _studioToggleMain.name = _studioToggleMain.slot.GetComponentInChildren<Text>();
+            _studioToggleMain.onButton = _studioToggleMain.slot.GetChild(1).GetComponent<Button>();
+            _studioToggleMain.offButton = _studioToggleMain.slot.GetChild(2).GetComponent<Button>();
             _studioToggleMain.name.text = "メイン";
-            rectTransform.SetParent(parent);
-            rectTransform.localPosition = Vector3.zero;
-            rectTransform.localScale = Vector3.one;
+            _studioToggleMain.slot.SetParent(_studioToggleTemplate.parent);
+            _studioToggleMain.slot.localPosition = Vector3.zero;
+            _studioToggleMain.slot.localScale = Vector3.one;
             _studioToggleMain.onButton.onClick = new Button.ButtonClickedEvent();
             _studioToggleMain.onButton.onClick.AddListener(() =>
             {
-                SelectedStudioCharacter.charInfo.SetAccessoryStateCategory(0, true);
+                _selectedStudioCharacter.charInfo.SetAccessoryStateCategory(0, true);
                 ctrl.UpdateInfo();
                 UpdateStudioUI();
             });
             _studioToggleMain.offButton.onClick = new Button.ButtonClickedEvent();
             _studioToggleMain.offButton.onClick.AddListener(() =>
             {
-                SelectedStudioCharacter.charInfo.SetAccessoryStateCategory(0, false);
+                _selectedStudioCharacter.charInfo.SetAccessoryStateCategory(0, false);
                 ctrl.UpdateInfo();
                 UpdateStudioUI();
             });
-            rectTransform.SetAsLastSibling();
+            _studioToggleMain.slot.SetAsLastSibling();
 
-            _studioToggleSub = new StudioSlotData
-            {
-                slot = (RectTransform)Object.Instantiate(_studioToggleTemplate.gameObject).transform
-            };
+            _studioToggleSub = new StudioSlotData();
+            _studioToggleSub.slot = (RectTransform)Object.Instantiate(_studioToggleTemplate.gameObject).transform;
             _studioToggleSub.name = _studioToggleSub.slot.GetComponentInChildren<Text>();
             _studioToggleSub.onButton = _studioToggleSub.slot.GetChild(1).GetComponent<Button>();
             _studioToggleSub.offButton = _studioToggleSub.slot.GetChild(2).GetComponent<Button>();
             _studioToggleSub.name.text = "サブ";
-            _studioToggleSub.slot.SetParent(parent);
+            _studioToggleSub.slot.SetParent(_studioToggleTemplate.parent);
             _studioToggleSub.slot.localPosition = Vector3.zero;
             _studioToggleSub.slot.localScale = Vector3.one;
             _studioToggleSub.onButton.onClick = new Button.ButtonClickedEvent();
             _studioToggleSub.onButton.onClick.AddListener(() =>
             {
-                SelectedStudioCharacter.charInfo.SetAccessoryStateCategory(1, true);
+                _selectedStudioCharacter.charInfo.SetAccessoryStateCategory(1, true);
                 ctrl.UpdateInfo();
                 UpdateStudioUI();
             });
             _studioToggleSub.offButton.onClick = new Button.ButtonClickedEvent();
             _studioToggleSub.offButton.onClick.AddListener(() =>
             {
-                SelectedStudioCharacter.charInfo.SetAccessoryStateCategory(1, false);
+                _selectedStudioCharacter.charInfo.SetAccessoryStateCategory(1, false);
                 ctrl.UpdateInfo();
                 UpdateStudioUI();
             });
@@ -113,13 +101,13 @@ namespace MoreAccessoriesKOI
 
         internal void UpdateStudioUI()
         {
-            if (SelectedStudioCharacter == null)
+            if (_selectedStudioCharacter == null)
                 return;
-            var show = SelectedStudioCharacter.charInfo.fileStatus.showAccessory;
-            var parts = SelectedStudioCharacter.charInfo.nowCoordinate.accessory.parts;
+            var show = _selectedStudioCharacter.charInfo.fileStatus.showAccessory;
+            var parts = _selectedStudioCharacter.charInfo.nowCoordinate.accessory.parts;
             var count = parts.Length - 20;
-            var i = 0;
-            for (; i < count; i++)
+            int i;
+            for (i = 0; i < count; i++)
             {
                 StudioSlotData slot;
                 var i1 = i + 20;
@@ -144,14 +132,14 @@ namespace MoreAccessoriesKOI
                     slot.onButton.onClick = new Button.ButtonClickedEvent();
                     slot.onButton.onClick.AddListener(() =>
                     {
-                        SelectedStudioCharacter.charInfo.chaFile.status.showAccessory[i1] = true;
+                        _selectedStudioCharacter.charInfo.chaFile.status.showAccessory[i1] = true;
                         slot.onButton.image.color = Color.green;
                         slot.offButton.image.color = Color.white;
                     });
                     slot.offButton.onClick = new Button.ButtonClickedEvent();
                     slot.offButton.onClick.AddListener(() =>
                     {
-                        SelectedStudioCharacter.charInfo.chaFile.status.showAccessory[i1] = false;
+                        _selectedStudioCharacter.charInfo.chaFile.status.showAccessory[i1] = false;
                         slot.offButton.image.color = Color.green;
                         slot.onButton.image.color = Color.white;
                     });

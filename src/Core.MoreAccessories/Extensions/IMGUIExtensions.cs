@@ -83,7 +83,7 @@ namespace MoreAccessoriesKOI.Extensions
                     SetCameraControlEnabled(true);
             }
         }
-        private static Canvas _canvas;
+        private static Canvas _canvas = null;
         public static RectTransform CreateUGUIPanelForIMGUI(bool addDisableCameraControlComponent = false)
         {
             if (_canvas == null)

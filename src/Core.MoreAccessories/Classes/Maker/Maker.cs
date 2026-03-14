@@ -1,11 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using ChaCustom;
-using UnityEngine;
 #if EC
+using HPlay;
+using ADVPart.Manipulate;
+using ADVPart.Manipulate.Chara;
 #endif
 #if KK || KKS
 #endif
+using UnityEngine;
 
 namespace MoreAccessoriesKOI
 {
@@ -14,7 +17,7 @@ namespace MoreAccessoriesKOI
     /// </summary>
     public class MakerMode
     {
-        public MakerMode() { Plugin.StartCoroutine(WaitForMakerReady()); }
+        public MakerMode() { Plugin.StartCoroutine(WaitforMakerReady()); }
         public Accessories AccessoriesWindow;
 #if KK || KKS
         public Copy_Window CopyWindow { get; internal set; }
@@ -27,17 +30,17 @@ namespace MoreAccessoriesKOI
         /// copySlotObject:= CvsAccessoryChange.tglSrcKind, CvsAccessoryChange.tglDstKind, CvsAccessoryChange.textSrc, CvsAccessoryChange.textDst,
         /// transferSlotObject:= CustomAcsChangeSlot.Items
         /// </summary>
-        internal List<CharaMakerSlotData> AdditionalCharaMakerSlots = new List<CharaMakerSlotData>();
-        internal bool Ready;
+        internal List<CharaMakerSlotData> _additionalCharaMakerSlots = new List<CharaMakerSlotData>();
+        internal bool ready;
         internal static MoreAccessories Plugin => MoreAccessories._self;
 
         public void UpdateMakerUI()
         {
-            if (!Ready) return;
+            if (!ready) return;
             AccessoriesWindow.UpdateUI();
         }
 
-        internal IEnumerator WaitForMakerReady()
+        internal IEnumerator WaitforMakerReady()
         {
             yield return new WaitWhile(() =>
             {
@@ -51,11 +54,11 @@ namespace MoreAccessoriesKOI
 
                 return false;
             });
-            Ready = true;
+            ready = true;
             UpdateMakerUI();
         }
 
-        internal IEnumerator RefreshTogglesWaitForMakerReady(int len)
+        internal IEnumerator RefreshTogglesWaitforMakerReady(int len)
         {
             yield return new WaitWhile(() =>
             {
@@ -78,9 +81,9 @@ namespace MoreAccessoriesKOI
 
         internal void RefreshToggles(int len)
         {
-            if (!Ready)
+            if (!ready)
             {
-                Plugin.StartCoroutine(RefreshTogglesWaitForMakerReady(len));
+                Plugin.StartCoroutine(RefreshTogglesWaitforMakerReady(len));
                 return;
             }
 
@@ -91,13 +94,13 @@ namespace MoreAccessoriesKOI
             UpdateMakerUI();
         }
 
-        internal void ValidateToggles()
+        internal void ValidatateToggles()
         {
-            AccessoriesWindow.ValidateToggles();
+            AccessoriesWindow.ValidatateToggles();
 #if KK || KKS
-            CopyWindow.ValidateToggles();
+            CopyWindow.ValidatateToggles();
 #endif
-            TransferWindow.ValidateToggles();
+            TransferWindow.ValidatateToggles();
         }
     }
 }

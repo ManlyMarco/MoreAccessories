@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using HPlay;
+﻿using HPlay;
 using Illusion.Extensions;
 using MoreAccessoriesKOI.Extensions;
+using System.Collections.Generic;
+using System.Linq;
 using TMPro;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,9 +21,7 @@ namespace MoreAccessoriesKOI
         private readonly List<PlaySceneSlotData> _additionalPlaySceneSlots = new List<PlaySceneSlotData>();
         private RectTransform _playButtonTemplate;
         public readonly HPlayHPartAccessoryCategoryUI _playUI;
-
         private ScrollRect scrollView;
-
         //CharaUICtrl
         private void SpawnPlayUI()
         {
@@ -46,12 +45,11 @@ namespace MoreAccessoriesKOI
                 Object.Destroy(scrollView.verticalScrollbar.gameObject);
             Object.Destroy(scrollView.GetComponent<Image>());
             Object.Destroy(scrollView.content.gameObject);
-            var parent = _playButtonTemplate.parent;
-            scrollView.content = (RectTransform)parent;
-            parent.SetParent(scrollView.viewport, false);
-            parent.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-            ((RectTransform)parent).anchoredPosition = Vector2.zero;
-            parent.GetComponent<VerticalLayoutGroup>().padding = new RectOffset(0, 0, 0, 0);
+            scrollView.content = (RectTransform)_playButtonTemplate.parent;
+            _playButtonTemplate.parent.SetParent(scrollView.viewport, false);
+            _playButtonTemplate.parent.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+            ((RectTransform)_playButtonTemplate.parent).anchoredPosition = Vector2.zero;
+            _playButtonTemplate.parent.GetComponent<VerticalLayoutGroup>().padding = new RectOffset(0, 0, 0, 0);
             foreach (var b in buttons)
                 ((RectTransform)b.btn.transform).anchoredPosition = Vector2.zero;
         }
@@ -81,7 +79,10 @@ namespace MoreAccessoriesKOI
                 slot.slot.localScale = Vector3.one;
                 var i1 = j + 20;
                 slot.button.onClick = new Button.ButtonClickedEvent();
-                slot.button.onClick.AddListener(() => { _playUI.selectChara.chaFile.status.showAccessory[i1] = !_playUI.selectChara.chaFile.status.showAccessory[i1]; });
+                slot.button.onClick.AddListener(() =>
+                {
+                    _playUI.selectChara.chaFile.status.showAccessory[i1] = !_playUI.selectChara.chaFile.status.showAccessory[i1];
+                });
 
                 //modify original array
                 _playUI.accessoryCategoryUIs = _playUI.accessoryCategoryUIs.Concat(new HPlayHPartUI.SelectUITextMesh

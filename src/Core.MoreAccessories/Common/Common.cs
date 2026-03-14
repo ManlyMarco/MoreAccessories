@@ -1,149 +1,61 @@
-﻿using System;
+﻿using Illusion.Extensions;
 using System.Linq;
-using MoreAccessoriesKOI.Patches;
+using UniRx;
 using UnityEngine;
 
 namespace MoreAccessoriesKOI
 {
     public partial class MoreAccessories
     {
+
         public static void ManuallyUpdateUI() => _self.UpdateUI();
 
         /// <summary>
-        /// Sync the Arrays of the ChaControl so that the now coordinate size is reflected in relevant arrays.
+        /// Sync the Arrays of the ChaControl so that the nowcoordinate size is reflected in revelent arrays.
         /// In maker: syncs to the largest array size
         /// </summary>
         /// <param name="controller"> The Chacontrol to be adjusted</param>
         public static void ArraySync(ChaControl controller)
         {
-            Common_Patches.Seal(false);
+            Patches.Common_Patches.Seal(false);
             if (controller.nowCoordinate == null)
             {
                 return;
             }
-
-            var maxAccessoryLength = MaxAccessoryCount(controller);
-            UpdateShowAccessoryArray(controller, maxAccessoryLength);
-
-            UpdateObjectAccessoryArray(controller, maxAccessoryLength);
-
-            UpdateChaAccessoryComponentArray(controller, maxAccessoryLength);
-
-            UpdateHideHairAccessoriesArray(controller, maxAccessoryLength);
-
-            UpdateInfoAccessoryArray(controller, maxAccessoryLength);
-
-            UpdateObjAcsMoveArray(controller, maxAccessoryLength);
-
-            if (CharaMaker)
-            {
-                var accessoryParts = controller.nowCoordinate.accessory.parts;
-                var currentCoordinateLength = accessoryParts.Length;
-                for (var i = 0; i < currentCoordinateLength; i++)
-                {
-                    var part = accessoryParts[i];
-                    if (part.type != 120)
-                    {
-#if KKS
-                        controller.infoAccessory[i] = controller.lstCtrl.GetInfo((ChaListDefine.CategoryNo)part.type, part.id);
-#else
-                        controller.infoAccessory[i] = controller.lstCtrl.GetListInfo((ChaListDefine.CategoryNo)part.type, part.id);
-#endif
-                    }
-                }
-
-                var delta = maxAccessoryLength - accessoryParts.Length;
-                if (delta > 0)
-                {
-                    var partsArray = new ChaFileAccessory.PartsInfo[delta];
-                    for (var i = 0; i < delta; i++)
-                    {
-                        partsArray[i] = new ChaFileAccessory.PartsInfo();
-                    }
-
-                    controller.nowCoordinate.accessory.parts = accessoryParts.Concat(partsArray).ToArray();
-                }
-                else if (delta < 0)
-                {
-                    controller.nowCoordinate.accessory.parts = accessoryParts.Take(maxAccessoryLength).ToArray();
-                }
+            var parts = controller.nowCoordinate.accessory.parts;
+            var len = parts.Length;
+            var nowlength = len;
+            //Print($"Syncng {controller.chaFile.parameter.fullname} to {len}");
 
 #if KK || KKS
-                foreach (var item in controller.chaFile.coordinate)
-                {
-                    delta = maxAccessoryLength - item.accessory.parts.Length;
-                    if (delta > 0)
-                    {
-                        var array = new ChaFileAccessory.PartsInfo[delta];
-                        for (var i = 0; i < delta; i++)
-                        {
-                            array[i] = new ChaFileAccessory.PartsInfo();
-                        }
-
-                        item.accessory.parts = item.accessory.parts.Concat(array).ToArray();
-                    }
-                    else if (delta < 0)
-                    {
-                        item.accessory.parts = item.accessory.parts.Take(maxAccessoryLength).ToArray();
-                    }
-                }
-#elif EC
-                delta = maxAccessoryLength - controller.chaFile.coordinate.accessory.parts.Length;
-                if (delta > 0)
-                {
-                    var array = new ChaFileAccessory.PartsInfo[delta];
-                    for (var i = 0; i < delta; i++) { array[i] = new ChaFileAccessory.PartsInfo(); }
-                    controller.chaFile.coordinate.accessory.parts = controller.chaFile.coordinate.accessory.parts.Concat(array).ToArray();
-                }
-                else if (delta < 0)
-                {
-                    controller.chaFile.coordinate.accessory.parts = controller.chaFile.coordinate.accessory.parts.Take(maxAccessoryLength).ToArray();
-                }
-#endif
-                MakerMode.RefreshToggles(maxAccessoryLength);
-            }
-
-            Common_Patches.Seal(true);
-        }
-
-        internal static int MaxAccessoryCount(ChaControl controller)
-        {
-            var maxAccessoryLength = controller.nowCoordinate.accessory.parts.Length;
-
-#if KK || KKS
+            //Print($"Nowlength is {nowlength}");
             if (CharaMaker)
             {
                 foreach (var item in controller.chaFile.coordinate)
                 {
-                    maxAccessoryLength = System.Math.Max(maxAccessoryLength, item.accessory.parts.Length);
+                    len = System.Math.Max(len, item.accessory.parts.Length);
+                    //Print($"coordinate length is {item.accessory.parts.Length}");
                 }
             }
 #endif
-            return maxAccessoryLength;
-        }
-
-        private static void UpdateShowAccessoryArray(ChaControl controller, int len)
-        {
+            //Print($"Max size in sync is {len}");
             var delta = len - controller.fileStatus.showAccessory.Length;
             if (delta > 0)
             {
-                var newArray = new bool[delta];
+                var newarray = new bool[delta];
                 for (var i = 0; i < delta; i++)
                 {
-                    newArray[i] = true;
+                    newarray[i] = true;
                 }
-
-                controller.fileStatus.showAccessory = controller.fileStatus.showAccessory.Concat(newArray).ToArray();
+                controller.fileStatus.showAccessory = controller.fileStatus.showAccessory.Concat(newarray).ToArray();
             }
             else if (delta < 0)
             {
                 controller.fileStatus.showAccessory = controller.fileStatus.showAccessory.Take(len).ToArray();
             }
-        }
 
-        private static void UpdateObjectAccessoryArray(ChaControl controller, int len)
-        {
-            var delta = len - controller.objAccessory.Length;
+
+            delta = len - controller.objAccessory.Length;
             if (delta > 0)
             {
                 controller.objAccessory = controller.objAccessory.Concat(new GameObject[delta]).ToArray();
@@ -158,14 +70,10 @@ namespace MoreAccessoriesKOI
                         controller.SafeDestroy(obj);
                     }
                 }
-
                 controller.objAccessory = controller.objAccessory.Take(len).ToArray();
             }
-        }
 
-        private static void UpdateChaAccessoryComponentArray(ChaControl controller, int len)
-        {
-            var delta = len - controller.cusAcsCmp.Length;
+            delta = len - controller.cusAcsCmp.Length;
             if (delta > 0)
             {
                 controller.cusAcsCmp = controller.cusAcsCmp.Concat(new ChaAccessoryComponent[delta]).ToArray();
@@ -174,11 +82,8 @@ namespace MoreAccessoriesKOI
             {
                 controller.cusAcsCmp = controller.cusAcsCmp.Take(len).ToArray();
             }
-        }
 
-        private static void UpdateHideHairAccessoriesArray(ChaControl controller, int len)
-        {
-            var delta = len - controller.hideHairAcs.Length;
+            delta = len - controller.hideHairAcs.Length;
             if (delta > 0)
             {
                 controller.hideHairAcs = controller.hideHairAcs.Concat(new bool[delta]).ToArray();
@@ -187,11 +92,8 @@ namespace MoreAccessoriesKOI
             {
                 controller.hideHairAcs = controller.hideHairAcs.Take(len).ToArray();
             }
-        }
 
-        private static void UpdateInfoAccessoryArray(ChaControl controller, int len)
-        {
-            var delta = len - controller.infoAccessory.Length;
+            delta = len - controller.infoAccessory.Length;
             if (delta > 0)
             {
                 controller.infoAccessory = controller.infoAccessory.Concat(new ListInfoBase[delta]).ToArray();
@@ -200,77 +102,132 @@ namespace MoreAccessoriesKOI
             {
                 controller.infoAccessory = controller.infoAccessory.Take(len).ToArray();
             }
-        }
 
-        private static void UpdateObjAcsMoveArray(ChaControl controller, int len)
-        {
-            var moveLength = controller.objAcsMove.GetLength(0);
-            var delta = len - moveLength;
+            var movelen = controller.objAcsMove.GetLength(0);
+            delta = len - movelen;
             if (delta > 0)
             {
-                var newArray = new GameObject[len, 2];
-                for (var i = 0; i < moveLength; i++)
+                var newarray = new GameObject[len, 2];
+                for (var i = 0; i < movelen; i++)
                 {
                     for (var j = 0; j < 2; j++)
                     {
-                        newArray[i, j] = controller.objAcsMove[i, j];
+                        newarray[i, j] = controller.objAcsMove[i, j];
                     }
                 }
-
-                controller.objAcsMove = newArray;
+                controller.objAcsMove = newarray;
             }
             else if (delta < 0)
             {
-                var newArray = new GameObject[len, 2];
+                var newarray = new GameObject[len, 2];
                 for (var i = 0; i < len; i++)
                 {
                     for (var j = 0; j < 2; j++)
                     {
-                        newArray[i, j] = controller.objAcsMove[i, j];
+                        newarray[i, j] = controller.objAcsMove[i, j];
                     }
                 }
-
-                controller.objAcsMove = newArray;
+                controller.objAcsMove = newarray;
             }
+
+            if (CharaMaker)
+            {
+                for (var i = 0; i < nowlength; i++)
+                {
+                    var part = parts[i];
+                    if (part.type != 120)
+                    {
+#if KKS
+                        controller.infoAccessory[i] = controller.lstCtrl.GetInfo((ChaListDefine.CategoryNo)part.type, part.id);
+#else
+                        controller.infoAccessory[i] = controller.lstCtrl.GetListInfo((ChaListDefine.CategoryNo)part.type, part.id);
+#endif
+                        continue;
+                    }
+                }
+                delta = len - nowlength;
+                if (delta > 0)
+                {
+                    var partsarray = new ChaFileAccessory.PartsInfo[delta];
+                    for (var i = 0; i < delta; i++) { partsarray[i] = new ChaFileAccessory.PartsInfo(); }
+                    controller.nowCoordinate.accessory.parts = controller.nowCoordinate.accessory.parts.Concat(partsarray).ToArray();
+                }
+                else if (delta < 0)
+                {
+                    controller.nowCoordinate.accessory.parts = controller.nowCoordinate.accessory.parts.Take(len).ToArray();
+                }
+
+#if KK || KKS
+                foreach (var item in controller.chaFile.coordinate)
+                {
+                    delta = len - item.accessory.parts.Length;
+                    if (delta > 0)
+                    {
+                        var array = new ChaFileAccessory.PartsInfo[delta];
+                        for (var i = 0; i < delta; i++) { array[i] = new ChaFileAccessory.PartsInfo(); }
+                        item.accessory.parts = item.accessory.parts.Concat(array).ToArray();
+                    }
+                    else if (delta < 0)
+                    {
+                        item.accessory.parts = item.accessory.parts.Take(len).ToArray();
+                    }
+                }
+#elif EC
+                delta = len - controller.chaFile.coordinate.accessory.parts.Length;
+                if (delta > 0)
+                {
+                    var array = new ChaFileAccessory.PartsInfo[delta];
+                    for (var i = 0; i < delta; i++) { array[i] = new ChaFileAccessory.PartsInfo(); }
+                    controller.chaFile.coordinate.accessory.parts = controller.chaFile.coordinate.accessory.parts.Concat(array).ToArray();
+                }
+                else if (delta < 0)
+                {
+                    controller.chaFile.coordinate.accessory.parts = controller.chaFile.coordinate.accessory.parts.Take(len).ToArray();
+                }
+#endif
+                MakerMode.RefreshToggles(len);
+            }
+            Patches.Common_Patches.Seal(true);
         }
 
         /// <summary>
-        /// Sync the show accessory array with parts array.
+        /// Sync the showaccessory array with parts array.
         /// </summary>
         /// <param name="file"></param>
         internal static void ArraySync(ChaFile file)
         {
-            Common_Patches.Seal(false);
+            Patches.Common_Patches.Seal(false);
+            var len = 20;
 #if KK || KKS
-            var maxAccessoryLength = file.coordinate[file.status.coordinateType].accessory.parts.Length;
+            len = file.coordinate[file.status.coordinateType].accessory.parts.Length;
 #elif EC
-            var maxAccessoryLength = file.coordinate.accessory.parts.Length;
+            len = file.coordinate.accessory.parts.Length;
 #endif
             //Print($"Max size in sync is {len}");
-            var delta = maxAccessoryLength - file.status.showAccessory.Length;
+            var delta = len - file.status.showAccessory.Length;
             if (delta > 0)
             {
-                var newArray = new bool[delta];
+                var newarray = new bool[delta];
                 for (var i = 0; i < delta; i++)
                 {
-                    newArray[i] = true;
+                    newarray[i] = true;
                 }
-
-                file.status.showAccessory = file.status.showAccessory.Concat(newArray).ToArray();
+                file.status.showAccessory = file.status.showAccessory.Concat(newarray).ToArray();
             }
             else if (delta < 0)
             {
-                file.status.showAccessory = file.status.showAccessory.Take(maxAccessoryLength).ToArray();
+                file.status.showAccessory = file.status.showAccessory.Take(len).ToArray();
             }
 
-            Common_Patches.Seal(true);
+            Patches.Common_Patches.Seal(true);
         }
 
         internal static void NowCoordinateTrimAndSync(ChaControl controller)
         {
             if (controller == null) return;
 
-            var index = Math.Max(20, Array.FindLastIndex(controller.nowCoordinate.accessory.parts, x => x.type != 120) + 1);
+            var index = System.Array.FindLastIndex(controller.nowCoordinate.accessory.parts, x => x.type != 120) + 1;
+            if (index < 20) index = 20;
             controller.nowCoordinate.accessory.parts = controller.nowCoordinate.accessory.parts.Take(index).ToArray();
             ArraySync(controller);
         }
@@ -280,7 +237,7 @@ namespace MoreAccessoriesKOI
         /// </summary>
         public static void TurnOffBackwardsCompatibility()
         {
-            _backwardCompatibility = false;
+            BackwardCompatibility = false;
         }
     }
 }

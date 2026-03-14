@@ -1,52 +1,49 @@
-﻿using BepInEx.Configuration;
-
-namespace MoreAccessoriesKOI
+﻿namespace MoreAccessoriesKOI
 {
     public partial class MoreAccessories
     {
-        internal const string VersionNum = "2.0.22";
-        private const string Guid = "com.joan6694.illusionplugins.moreaccessories";
-        
-        // ReSharper disable once InconsistentNaming - Used By Coordinate load options
+        public const string versionNum = "2.0.21";
+        public const string GUID = "com.joan6694.illusionplugins.moreaccessories";
+
         public static MoreAccessories _self;
 
-        private const int SaveVersion = 2;
-        private const string ExtSaveKey = "moreAccessories";
+        private const int _saveVersion = 2;
+        private const string _extSaveKey = "moreAccessories";
 
-        internal static bool HasDarkness;
-        private bool ImportingCards { get; set; }
-        internal static bool CharaMaker => _makerMode != null;
+        internal static bool _hasDarkness;
+        public bool ImportingCards { get; private set; }
+        internal static bool CharaMaker => _makermode != null;
 
         /// <summary>
-        /// Only affects saving of data in old more accessory format
+        /// Only affects saving of data in old moreaccessory format
         /// </summary>
-        private static bool _backwardCompatibility = true; //Do not turn back on once off.
+        private static bool BackwardCompatibility = true; //Do not turn back on once off.
 
         public static MakerMode MakerMode
         {
-            get { return _makerMode; }
-            private set
+            get { return _makermode; }
+            internal set
             {
 #if KK || KKS
                 _hMode = null;
 #elif EC
                 _playMode = null;
 #endif
-                _makerMode = value;
+                _makermode = value;
             }
         }
 
-        private static MakerMode _makerMode;
+        private static MakerMode _makermode;
 
 #if KK || KKS
-        private static bool InH => _hMode != null;
+        internal static bool InH => _hMode != null;
 
         public static HScene HMode
         {
-            get => _hMode;
+            get { return _hMode; }
             internal set
             {
-                _makerMode = null;
+                _makermode = null;
                 _hMode = value;
             }
         }
@@ -54,12 +51,12 @@ namespace MoreAccessoriesKOI
         private static HScene _hMode;
 
         internal static bool InStudio => StudioMode != null;
-        private static StudioClass StudioMode { get; set; }
+        public static StudioClass StudioMode { get; internal set; }
 #elif EC
         internal bool InPlayMode => PlayMode != null;
         public static PlayMode PlayMode
         {
-            get => _playMode;
+            get { return _playMode; }
             internal set
             {
                 MakerMode = null;
@@ -68,7 +65,7 @@ namespace MoreAccessoriesKOI
         }
         private static PlayMode _playMode;
 
-        internal static ConfigEntry<bool> SceneCreateAccessoryNames;
+        internal static BepInEx.Configuration.ConfigEntry<bool> SceneCreateAccessoryNames;
 #endif
     }
 }
