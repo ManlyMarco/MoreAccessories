@@ -1,0 +1,48 @@
+<Project>
+	<!-- Inline task to get file version from assembly -->
+	<UsingTask TaskName="GetFileVersion" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+		<ParameterGroup>
+			<AssemblyPath ParameterType="System.String" Required="true" />
+			<FileVersion Output="true" ParameterType="System.String" />
+		</ParameterGroup>
+		<Task>
+			<Code Type="Fragment" Language="cs">
+				FileVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(AssemblyPath).FileVersion;
+			</Code>
+		</Task>
+	</UsingTask>
+
+	<!-- Create a release zip file (after successful Release build) -->
+	<Target Name="CreateReleaseZip" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
+		<GetFileVersion AssemblyPath="$(OutputPath)$(AssemblyName).dll">
+			<Output TaskParameter="FileVersion" PropertyName="FileVersionFromAssembly" />
+		</GetFileVersion>
+
+		<PropertyGroup>
+			<CopyDir>$(OutputPath)\..\TEMP_COPY_$(MSBuildProjectName)</CopyDir>
+			<GameType>$([System.Text.RegularExpressions.Regex]::Match($(MSBuildProjectName), '[^\.]*$'))</GameType>
+			<ZipDir>$(OutputPath)\..\..\..</ZipDir>
+			<ZipPath>$(ZipDir)\$(GameType)_$(AssemblyName)_v$(FileVersionFromAssembly).zip</ZipPath>
+		</PropertyGroup>
+
+		<ItemGroup>
+			<BuildFiles Include="$(OutputPath)\**\*"/>
+		</ItemGroup>
+
+		<RemoveDir Directories="$(CopyDir)" />
+		<Copy DestinationFolder="$(CopyDir)\BepInEx\plugins\%(BuildFiles.RecursiveDir)" SourceFiles="@(BuildFiles)" />
+
+		<ItemGroup>
+			<ZipmodFiles Include="$(CopyDir)\BepInEx\plugins\**\*.zipmod"/>
+		</ItemGroup>
+		<Move DestinationFolder="$(CopyDir)\mods\%(ZipmodFiles.RecursiveDir)" SourceFiles="@(ZipmodFiles)" />
+
+		<Message Importance="high" Text="Writing release zip to: $(ZipPath)" />
+
+		<MakeDir Directories="$(ZipDir)" />
+
+		<!-- https://learn.microsoft.com/en-us/visualstudio/msbuild/zipdirectory-task?view=vs-2022 -->
+		<ZipDirectory SourceDirectory="$(CopyDir)" DestinationFile="$(ZipPath)" Overwrite="true" />
+		<RemoveDir Directories="$(CopyDir)" />
+	</Target>
+</Project>
