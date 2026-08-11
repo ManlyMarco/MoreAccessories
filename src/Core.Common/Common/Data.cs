@@ -2,7 +2,7 @@
 {
     public partial class MoreAccessories
     {
-        public const string versionNum = "2.0.21.1";
+        public const string versionNum = Constants.Version;
         public const string GUID = "com.joan6694.illusionplugins.moreaccessories";
 
         public static MoreAccessories _self;

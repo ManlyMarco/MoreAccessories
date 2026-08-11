@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net46</TargetFramework>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="IllusionLibs.EmotionCreators.AllPackages" Version="*" />
+		<PackageReference Include="IllusionLibs.EmotionCreators.MoreAccessories" Version="*">
+		  <ExcludeAssets>all</ExcludeAssets>
+		  <PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="ExtensibleSaveFormat.EmotionCreators" Version="16.8.1" />
+		<PackageReference Include="Sideloader.EmotionCreators" Version="16.8.1" />
+	</ItemGroup>
+
+	<Import Project="..\Core.EC\EmotionCreators.projitems" Label="Shared" />
+	<Import Project="..\Core.Common\Core.MoreAccessories.projitems" Label="Shared" />
+</Project>

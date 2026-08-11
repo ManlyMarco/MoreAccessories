@@ -9,7 +9,6 @@
     <Import_RootNamespace>MoreAccessoriesKOI</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Common\AssemblyInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\EventorBackwards\BackwardCompatibility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Classes\Maker\Maker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\EventorBackwards\PluginSupport.cs" />

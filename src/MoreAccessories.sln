@@ -1,25 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36811.4 d17.14
+VisualStudioVersion = 17.14.36811.4
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoreAccessories.KKS", "PluginCode\MoreAccessories.KKS.csproj", "{799E8918-D6E9-47AF-9218-466D328960FC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.MoreAccessories", "KKS.MoreAccessories\KKS.MoreAccessories.csproj", "{799E8918-D6E9-47AF-9218-466D328960FC}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.MoreAccessories", "Core.MoreAccessories\Core.MoreAccessories.shproj", "{55827E06-0285-4E96-9CE9-53CE310C382B}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.Common", "Core.Common\Core.Common.shproj", "{55827E06-0285-4E96-9CE9-53CE310C382B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoreAccessories.KK", "MoreAccessories\MoreAccessories.KK.csproj", "{675F51E5-166D-49AD-8B01-45E8959629D7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.MoreAccessories", "KK.MoreAccessories\KK.MoreAccessories.csproj", "{675F51E5-166D-49AD-8B01-45E8959629D7}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sunshine", "Sunshine", "{AFECFC9A-1211-4AF6-B690-EA414B88B966}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC.MoreAccessories", "EC.MoreAccessories\EC.MoreAccessories.csproj", "{94578E6D-ECC4-4427-B5ED-2896EACCF25C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "KK", "KK", "{AA2D0D04-E065-437F-89D8-D8D7718AF66D}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.EC", "Core.EC\Core.EC.shproj", "{7ED9BFF9-D1DC-48C6-851E-79F59805AED1}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EC", "EC", "{B1B0C5C8-A14B-4DE1-A1AE-65E445E40FD1}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoreAccessories.EC", "MoreAccessoriesEC\MoreAccessories.EC.csproj", "{94578E6D-ECC4-4427-B5ED-2896EACCF25C}"
-EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "EmotionCreators", "EmotionCreators\EmotionCreators.shproj", "{7ED9BFF9-D1DC-48C6-851E-79F59805AED1}"
-EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Koikatsu", "Koikatsu\Koikatsu.shproj", "{7B1A016D-5D9F-42CA-8858-53BB0666B0B4}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.KK", "Core.KK\Core.KK.shproj", "{7B1A016D-5D9F-42CA-8858-53BB0666B0B4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Solution", "_Solution", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 	ProjectSection(SolutionItems) = preProject
@@ -50,23 +44,18 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{799E8918-D6E9-47AF-9218-466D328960FC} = {AFECFC9A-1211-4AF6-B690-EA414B88B966}
-		{675F51E5-166D-49AD-8B01-45E8959629D7} = {AA2D0D04-E065-437F-89D8-D8D7718AF66D}
-		{94578E6D-ECC4-4427-B5ED-2896EACCF25C} = {B1B0C5C8-A14B-4DE1-A1AE-65E445E40FD1}
-	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FDFF1C20-A8AF-42FB-8BD8-4B5087BC50F3}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Core.MoreAccessories\Core.MoreAccessories.projitems*{55827e06-0285-4e96-9ce9-53ce310c382b}*SharedItemsImports = 13
-		Core.MoreAccessories\Core.MoreAccessories.projitems*{675f51e5-166d-49ad-8b01-45e8959629d7}*SharedItemsImports = 4
-		Koikatsu\Koikatsu.projitems*{675f51e5-166d-49ad-8b01-45e8959629d7}*SharedItemsImports = 4
-		Core.MoreAccessories\Core.MoreAccessories.projitems*{799e8918-d6e9-47af-9218-466d328960fc}*SharedItemsImports = 4
-		Koikatsu\Koikatsu.projitems*{799e8918-d6e9-47af-9218-466d328960fc}*SharedItemsImports = 4
-		Koikatsu\Koikatsu.projitems*{7b1a016d-5d9f-42ca-8858-53bb0666b0b4}*SharedItemsImports = 13
-		EmotionCreators\EmotionCreators.projitems*{7ed9bff9-d1dc-48c6-851e-79f59805aed1}*SharedItemsImports = 13
-		Core.MoreAccessories\Core.MoreAccessories.projitems*{94578e6d-ecc4-4427-b5ed-2896eaccf25c}*SharedItemsImports = 4
-		EmotionCreators\EmotionCreators.projitems*{94578e6d-ecc4-4427-b5ed-2896eaccf25c}*SharedItemsImports = 4
+		Core.Common\Core.MoreAccessories.projitems*{55827e06-0285-4e96-9ce9-53ce310c382b}*SharedItemsImports = 13
+		Core.Common\Core.MoreAccessories.projitems*{675f51e5-166d-49ad-8b01-45e8959629d7}*SharedItemsImports = 5
+		Core.KK\Koikatsu.projitems*{675f51e5-166d-49ad-8b01-45e8959629d7}*SharedItemsImports = 5
+		Core.Common\Core.MoreAccessories.projitems*{799e8918-d6e9-47af-9218-466d328960fc}*SharedItemsImports = 5
+		Core.KK\Koikatsu.projitems*{799e8918-d6e9-47af-9218-466d328960fc}*SharedItemsImports = 5
+		Core.KK\Koikatsu.projitems*{7b1a016d-5d9f-42ca-8858-53bb0666b0b4}*SharedItemsImports = 13
+		Core.EC\EmotionCreators.projitems*{7ed9bff9-d1dc-48c6-851e-79f59805aed1}*SharedItemsImports = 13
+		Core.Common\Core.MoreAccessories.projitems*{94578e6d-ecc4-4427-b5ed-2896eaccf25c}*SharedItemsImports = 5
+		Core.EC\EmotionCreators.projitems*{94578e6d-ecc4-4427-b5ed-2896eaccf25c}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

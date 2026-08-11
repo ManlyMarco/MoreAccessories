@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net35</TargetFramework>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="IllusionLibs.Koikatu.AllPackages" Version="*" />
+		<PackageReference Include="IllusionLibs.Koikatu.MoreAccessories" Version="*">
+			<ExcludeAssets>all</ExcludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="ExtensibleSaveFormat.Koikatu" Version="16.8.1" />
+		<PackageReference Include="Sideloader.Koikatu" Version="16.8.1" />
+	</ItemGroup>
+
+	<Import Project="..\Core.KK\Koikatsu.projitems" Label="Shared" />
+	<Import Project="..\Core.Common\Core.MoreAccessories.projitems" Label="Shared" />
+</Project>
