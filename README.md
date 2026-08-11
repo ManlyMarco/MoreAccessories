@@ -4,6 +4,8 @@ The plugin has been overhauled by jalil49 to make it less hacky and more compati
 
 Note that this is fork is only for the Koikatsu branch (KK, KKS and EC) since the AI and HS2 branch of MoreAccessories is already using the new approach introduced by the overhaul.
 
+You can get the latest nightly builds of all plugins from the [CI workflow](https://github.com/IllusionMods/MoreAccessories/actions/workflows/ci.yaml). Open the latest successful run and download the build from the Artifacts section.
+
 ## How to use
 1. Install latest BepInEx5 and BepisPlugins.
 2. Download the latest release zip for your game from the releases page.
